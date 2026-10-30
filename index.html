@@ -1,17 +1,1174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23234E3E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z'/><path d='M6 6h10'/><path d='M6 10h10'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>College Complaint Management System | PBL Mini Project</title>
-    <!-- Editorial & Modernist Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-[#FAF9F5] text-[#1A1D20] antialiased selection:bg-[#E9DFCE] selection:text-[#1A1D20]">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Complaint Management System | PBL Mini Project</title>
+  
+  <!-- Institutional Crest Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23234E3E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z'/><path d='M6 6h10'/><path d='M6 10h10'/></svg>">
+  
+  <!-- Academic & Editorial Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 1. Institutional Micro Banner -->
+  <div class="micro-banner no-print">
+    <div class="container micro-banner-inner">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="pulse-dot"></span>
+        <span style="font-weight: 600; letter-spacing: 0.03em;">OFFICIAL CENTRAL GRIEVANCE & COMPLAINT MANAGEMENT SYSTEM</span>
+        <span style="color: #8FAFA1; margin: 0 4px;">|</span>
+        <span style="color: #A6C0B5; font-family: var(--font-mono);">PBL MINI PROJECT SUBMISSION</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px; font-family: var(--font-mono); font-size: 11px; color: #A6C0B5;">
+        <span>ACADEMIC YEAR 2026</span>
+        <button onclick="resetDemoData()" style="background: none; border: none; color: #F3F1E7; text-decoration: underline; cursor: pointer; font-size: 11px;">
+          🔄 Reset Demo DB
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Sticky Masthead Navigation -->
+  <header class="main-header no-print">
+    <div class="container nav-container">
+      <!-- Crest & Title -->
+      <div class="brand-wrapper">
+        <div class="brand-crest">🏛️</div>
+        <div class="brand-text">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h1>College Complaint Portal</h1>
+            <span class="badge" style="background: #EFECE1; color: #615B4C; border: 1px solid #DDD7C5;">SRS COMPLIANT</span>
+          </div>
+          <p>Project Based Learning (PBL) Mini Project &bull; Prepared by Samiksha Kakade</p>
+        </div>
+      </div>
+
+      <!-- Quick Tracker & Role Switcher Actions -->
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <!-- Quick ID Lookup -->
+        <form id="quick-track-form" class="quick-track-form">
+          <span class="quick-track-icon">🔍</span>
+          <input type="text" id="quick-track-input" class="quick-track-input" placeholder="Track ID (e.g. 1042)...">
+          <button type="submit" class="quick-track-btn">Track</button>
+        </form>
+
+        <!-- Reports Button -->
+        <button class="btn btn-secondary" onclick="openReportsModal()">
+          📊 SRS Reports
+        </button>
+
+        <!-- Active Role Switcher Dropdown -->
+        <div class="role-switcher-dropdown">
+          <button id="role-switcher-btn" class="role-switcher-btn">
+            <span>👤</span>
+            <div>
+              <span style="font-size: 9px; font-family: var(--font-mono); text-transform: uppercase; color: #A6C0B5; display: block; line-height: 1;">ACTIVE ROLE</span>
+              <strong id="active-role-label">Student</strong>
+            </div>
+            <span style="font-size: 10px; color: #A6C0B5;">▼</span>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div id="role-dropdown-menu" class="role-dropdown-menu hidden">
+            <div class="role-menu-header">Switch Role (SRS Verification)</div>
+            <button class="role-menu-item active" data-role="student">
+              <span style="font-size: 16px;">🎓</span>
+              <div>
+                <strong style="font-size: 12px; color: var(--ink-primary); display: block;">Student Portal</strong>
+                <span style="font-size: 11px; color: var(--ink-muted);">Samiksha Kakade (TE Comp A-42)</span>
+              </div>
+            </button>
+            <button class="role-menu-item" data-role="staff">
+              <span style="font-size: 16px;">👨‍🏫</span>
+              <div>
+                <strong style="font-size: 12px; color: var(--ink-primary); display: block;">Staff / Faculty Portal</strong>
+                <span style="font-size: 11px; color: var(--ink-muted);">Prof. D. Sharma (Lab In-Charge)</span>
+              </div>
+            </button>
+            <button class="role-menu-item" data-role="admin">
+              <span style="font-size: 16px;">🏛️</span>
+              <div>
+                <strong style="font-size: 12px; color: var(--ink-primary); display: block;">Administrator Portal</strong>
+                <span style="font-size: 11px; color: var(--ink-muted);">Dean of Student Affairs (Full Access)</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. Editorial Hero Banner with Live Metrics -->
+  <section class="hero-section no-print">
+    <div class="container">
+      <div class="hero-meta-bar">
+        <div>
+          <span style="color: var(--brand-amber); font-weight: 700;">● CAMPUS JURISDICTION</span>
+          <span>&bull; DEANERY OF STUDENT WELFARE</span>
+        </div>
+        <div>
+          <span>PORTAL VER: 2.4-PBL</span>
+          <span>&bull;</span>
+          <button onclick="openWorkflowModal()" style="background: none; border: none; color: var(--brand-amber); font-weight: 700; cursor: pointer; text-decoration: underline;">
+            View SRS 5-Stage Lifecycle
+          </button>
+        </div>
+      </div>
+
+      <div class="hero-grid">
+        <!-- Headline & Actions -->
+        <div class="hero-content">
+          <span class="badge" style="background: #EBE7DC; color: #554C3E; border: 1px solid #DDD7C5; margin-bottom: 8px;">
+            CENTRALIZED GRIEVANCE REDRESSAL MECHANISM
+          </span>
+          <h2>Accountable, transparent campus complaint resolution.</h2>
+          <p>
+            An automated, digital platform designed to eliminate manual delays, route student issues directly to responsible college departments, and maintain an immutable historical audit trail from submission to verified closure.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="openSubmitModal()">
+              ✍️ Lodge New Complaint
+            </button>
+            <button class="btn btn-secondary" onclick="openWorkflowModal()">
+              📋 SRS 5-Stage Workflow
+            </button>
+          </div>
+
+          <!-- Active User Dossier Preview -->
+          <div class="hero-user-strip">
+            <div class="user-avatar" id="hero-user-avatar">SK</div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <strong id="hero-user-name" style="font-size: 13px;">Samiksha Kakade</strong>
+                <span id="hero-user-role-badge" class="badge badge-submitted">STUDENT</span>
+              </div>
+              <div id="hero-user-desc" style="font-size: 11px; color: var(--ink-muted); font-family: var(--font-mono);">
+                2024-COMP-042 • T.E. Computer Engineering (Div A)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric KPI Cards -->
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span>Total Filed</span>
+              <span>📄</span>
+            </div>
+            <div class="metric-value" id="metric-total">0</div>
+            <div class="metric-caption">All-Time Records</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span>Active Pending</span>
+              <span>⏳</span>
+            </div>
+            <div class="metric-value" id="metric-pending" style="color: var(--status-pending);">0</div>
+            <div class="metric-caption">Under Investigation</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span>Resolved</span>
+              <span>✅</span>
+            </div>
+            <div class="metric-value" id="metric-resolved" style="color: var(--brand-forest);">0</div>
+            <div class="metric-caption">Verified Redressed</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-header">
+              <span>Resolution Rate</span>
+              <span>📈</span>
+            </div>
+            <div class="metric-value" id="metric-rate">100%</div>
+            <div class="metric-caption">Avg Velocity 1.8 Days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Main Role-Specific Workspaces -->
+  <main class="container portal-workspace">
+
+    <!-- A. STUDENT PORTAL (SRS § 5 & 9.3) -->
+    <section id="student-portal">
+      <!-- Student Dossier Header -->
+      <div class="portal-dossier-card">
+        <div class="portal-dossier-header">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: #FAF4E8; border: 1px solid #DFCBAA; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--brand-amber);">
+              🎓
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--ink-muted);">Verified Student Profile</span>
+                <span class="badge badge-resolved">Enrolled &bull; Active</span>
+              </div>
+              <h2 style="font-size: 24px; margin-top: 2px;">Samiksha Kakade</h2>
+              <div style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin-top: 2px;">
+                Roll: 2024-COMP-042 &bull; T.E. Computer Engineering (Div A) &bull; Department of Computer Engineering
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="openSubmitModal()">
+            ✍️ Lodge New Complaint
+          </button>
+        </div>
+
+        <div class="portal-dossier-stats">
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Complaints Filed</span>
+            <strong style="font-size: 20px; color: var(--ink-primary);" id="stu-stat-total">0</strong>
+          </div>
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Pending Action</span>
+            <strong style="font-size: 20px; color: var(--status-pending);" id="stu-stat-pending">0</strong>
+          </div>
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Resolved</span>
+            <strong style="font-size: 20px; color: var(--brand-forest);" id="stu-stat-resolved">0</strong>
+          </div>
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Archived Closed</span>
+            <strong style="font-size: 20px; color: var(--ink-body);" id="stu-stat-closed">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Toolbar Filters -->
+      <div class="toolbar">
+        <div id="student-filter-pills" class="filter-pills">
+          <button class="filter-btn active" onclick="setStudentFilter('All', this)">All</button>
+          <button class="filter-btn" onclick="setStudentFilter('Submitted', this)">Submitted</button>
+          <button class="filter-btn" onclick="setStudentFilter('Assigned', this)">Assigned</button>
+          <button class="filter-btn" onclick="setStudentFilter('In Progress', this)">In Progress</button>
+          <button class="filter-btn" onclick="setStudentFilter('Resolved', this)">Resolved</button>
+          <button class="filter-btn" onclick="setStudentFilter('Closed', this)">Closed</button>
+        </div>
+
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Filter by title, ID..." oninput="filterStudentSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- Grievance Ledger List -->
+      <div id="student-complaints-list" class="complaints-list"></div>
+    </section>
+
+    <!-- B. FACULTY / STAFF PORTAL (SRS § 5 & 9.4) -->
+    <section id="staff-portal" class="hidden">
+      <!-- Staff Dossier Header -->
+      <div class="portal-dossier-card">
+        <div class="portal-dossier-header">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: #EAF2ED; border: 1px solid #BFD9C7; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--brand-forest);">
+              👨‍🏫
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--ink-muted);">Authorized Faculty Officer</span>
+                <span class="badge badge-resolved">Active Liaison</span>
+              </div>
+              <h2 style="font-size: 24px; margin-top: 2px;">Prof. D. Sharma</h2>
+              <div style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-muted); margin-top: 2px;">
+                ID: STF-01 &bull; Associate Professor & Lab In-Charge &bull; Computer Engineering
+              </div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: var(--ink-body); max-width: 380px; background: #FAF8F2; padding: 10px 14px; border-radius: 8px; border: 1px solid #E8E5DD;">
+            <strong style="color: var(--brand-amber); font-family: var(--font-mono); display: block; font-size: 10px;">SRS STAFF RESPONSIBILITY:</strong>
+            Inspect assigned student grievances on site, update investigation lifecycle, add remarks, and log official resolution statements.
+          </div>
+        </div>
+
+        <div class="portal-dossier-stats">
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Assigned Queue</span>
+            <strong style="font-size: 20px; color: var(--ink-primary);" id="stf-stat-queue">0</strong>
+          </div>
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Under Investigation</span>
+            <strong style="font-size: 20px; color: var(--status-pending);" id="stf-stat-pending">0</strong>
+          </div>
+          <div>
+            <span style="font-size: 11px; color: var(--ink-muted); display: block;">Verified Resolved</span>
+            <strong style="font-size: 20px; color: var(--brand-forest);" id="stf-stat-resolved">0</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Staff Toolbar Filters -->
+      <div class="toolbar">
+        <div id="staff-filter-pills" class="filter-pills">
+          <button class="filter-btn active" onclick="setStaffFilter('All', this)">All</button>
+          <button class="filter-btn" onclick="setStaffFilter('Assigned', this)">Assigned</button>
+          <button class="filter-btn" onclick="setStaffFilter('In Progress', this)">In Progress</button>
+          <button class="filter-btn" onclick="setStaffFilter('Resolved', this)">Resolved</button>
+          <button class="filter-btn" onclick="setStaffFilter('Closed', this)">Closed</button>
+        </div>
+
+        <div class="search-input-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search student or title..." oninput="filterStaffSearch(this.value)">
+        </div>
+      </div>
+
+      <!-- Assigned Complaints List -->
+      <div id="staff-complaints-list" class="complaints-list"></div>
+    </section>
+
+    <!-- C. ADMINISTRATOR PORTAL (SRS § 5 & 9.2) -->
+    <section id="admin-portal" class="hidden">
+      <!-- Admin Navigation Subtabs -->
+      <div class="admin-subtabs">
+        <button class="admin-subtab-btn active" onclick="switchAdminSubtab('complaints', this)">
+          📁 Complaints Management (<span id="admin-count-complaints">0</span>)
+        </button>
+        <button class="admin-subtab-btn" onclick="switchAdminSubtab('students', this)">
+          🎓 Students (<span id="admin-count-students">0</span>)
+        </button>
+        <button class="admin-subtab-btn" onclick="switchAdminSubtab('staff', this)">
+          👥 Staff / Faculty (<span id="admin-count-staff">0</span>)
+        </button>
+        <button class="admin-subtab-btn" onclick="switchAdminSubtab('departments', this)">
+          🏛️ Departments (<span id="admin-count-dept">0</span>)
+        </button>
+        <button class="admin-subtab-btn" onclick="switchAdminSubtab('categories', this)">
+          🏷️ Categories (<span id="admin-count-cat">0</span>)
+        </button>
+        <button class="btn btn-primary btn-sm" style="margin-left: auto;" onclick="openReportsModal()">
+          📊 Generate SRS Reports
+        </button>
+      </div>
+
+      <!-- 1. All Complaints Management -->
+      <div id="admin-view-complaints">
+        <div class="toolbar">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <div id="admin-status-pills" class="filter-pills">
+              <button class="filter-btn active" onclick="setAdminStatusFilter('All', this)">All</button>
+              <button class="filter-btn" onclick="setAdminStatusFilter('Submitted', this)">Submitted</button>
+              <button class="filter-btn" onclick="setAdminStatusFilter('Assigned', this)">Assigned</button>
+              <button class="filter-btn" onclick="setAdminStatusFilter('In Progress', this)">In Progress</button>
+              <button class="filter-btn" onclick="setAdminStatusFilter('Resolved', this)">Resolved</button>
+              <button class="filter-btn" onclick="setAdminStatusFilter('Closed', this)">Closed</button>
+            </div>
+
+            <select id="admin-dept-filter" class="form-control" style="width: auto; padding: 6px 12px; font-size: 12px;" onchange="setAdminDeptFilter(this.value)">
+              <option value="All">All Departments</option>
+            </select>
+          </div>
+
+          <div class="search-input-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search complaints..." oninput="filterAdminSearch(this.value)">
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ID & Date</th>
+                <th>Student & Roll</th>
+                <th>Subject & Category</th>
+                <th>Department</th>
+                <th>Assigned Faculty</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-complaints-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2. Students Directory -->
+      <div id="admin-view-students" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 18px;">Enrolled Students Directory</h3>
+          <button class="btn btn-forest btn-sm" onclick="openAddStudentModal()">+ Enroll New Student</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Full Name</th>
+                <th>Roll Number</th>
+                <th>Class & Division</th>
+                <th>Department</th>
+                <th>Email Address</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-students-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3. Staff / Faculty Directory -->
+      <div id="admin-view-staff" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 18px;">Faculty Grievance Officers</h3>
+          <button class="btn btn-forest btn-sm" onclick="openAddStaffModal()">+ Add Faculty Officer</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Staff ID</th>
+                <th>Faculty Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Email Address</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 4. Departments Directory -->
+      <div id="admin-view-departments" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 18px;">Academic & Facilities Departments</h3>
+          <button class="btn btn-forest btn-sm" onclick="openAddDeptModal()">+ Add Department</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Dept ID</th>
+                <th>Department Name</th>
+                <th>Code</th>
+                <th>Head / Custodian</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-departments-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 5. Categories Directory -->
+      <div id="admin-view-categories" class="hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 18px;">Grievance Classifications</h3>
+          <button class="btn btn-forest btn-sm" onclick="openAddCatModal()">+ Add Category</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Cat ID</th>
+                <th>Category Name</th>
+                <th>Description</th>
+                <th>Default Department</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-categories-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================================
+       MODALS
+       ========================================================================= -->
+
+  <!-- Modal 1: Submit Complaint (Student) -->
+  <div id="submit-complaint-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+            SRS SECTION 9.6: COMPLAINT SUBMISSION
+          </span>
+          <h3 style="font-size: 18px; margin-top: 2px;">Lodge New Academic / Campus Complaint</h3>
+        </div>
+        <button onclick="closeSubmitModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+
+      <!-- Form View -->
+      <div id="submit-form-fields" class="modal-body">
+        <form id="submit-complaint-form">
+          <div style="padding: 12px; background: #FAF9F5; border: 1px solid #E8E5DD; border-radius: 8px; margin-bottom: 16px; font-size: 12px;">
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; display: block;">Complainant Profile</span>
+            <strong style="color: var(--ink-primary); font-size: 13px;">Samiksha Kakade</strong> (2024-COMP-042) &bull; Computer Engineering
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label class="form-label">1. Complaint Category *</label>
+              <select id="submit-category-select" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">2. Target Department *</label>
+              <select id="submit-department-select" class="form-control" required></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">3. Complaint Subject Summary *</label>
+            <input type="text" id="submit-title" class="form-control" placeholder="e.g. Workstation GPU driver crash during Lab session..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">4. Detailed Description of the Grievance *</label>
+            <textarea id="submit-description" class="form-control" rows="4" placeholder="Provide complete facts: specific room number, date, equipment tags, recurring symptoms..." required></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: center;">
+            <div class="form-group">
+              <label class="form-label">5. Priority Classification</label>
+              <div style="display: flex; gap: 6px;">
+                <label style="flex: 1; padding: 8px; border: 1px solid #DDD7C5; border-radius: 6px; font-size: 11px; text-align: center; cursor: pointer;">
+                  <input type="radio" name="priority" value="Normal" checked> Normal
+                </label>
+                <label style="flex: 1; padding: 8px; border: 1px solid #DDD7C5; border-radius: 6px; font-size: 11px; text-align: center; cursor: pointer;">
+                  <input type="radio" name="priority" value="Urgent"> Urgent
+                </label>
+                <label style="flex: 1; padding: 8px; border: 1px solid #DDD7C5; border-radius: 6px; font-size: 11px; text-align: center; cursor: pointer;">
+                  <input type="radio" name="priority" value="Critical"> Critical
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">6. Supporting Document / Proof</label>
+              <input type="file" id="submit-file" class="form-control" style="font-size: 11px;">
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeSubmitModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Submit Official Complaint</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success View -->
+      <div id="submit-success-view" class="modal-body hidden" style="text-align: center; padding: 36px 20px;">
+        <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+        <span class="badge badge-resolved" style="font-size: 11px;">STATUS: SUBMITTED & LOGGED</span>
+        <h3 style="font-size: 22px; margin: 12px 0 6px;">Complaint Registered Successfully!</h3>
+        <p style="color: var(--ink-body); font-size: 12px; max-width: 440px; margin: 0 auto 20px;">
+          Your formal grievance has been assigned an official reference ID and forwarded to the college administration queue.
+        </p>
+
+        <div style="background: #FAF9F5; border: 2px dashed #DDD7C5; border-radius: 12px; padding: 18px; max-width: 320px; margin: 0 auto 20px;">
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase;">Unique Complaint ID</div>
+          <div id="submitted-complaint-id" style="font-family: var(--font-mono); font-size: 24px; font-weight: 700; color: var(--brand-amber); margin-top: 4px;">
+            CMP-2026-0000
+          </div>
+        </div>
+
+        <button class="btn btn-forest" onclick="closeSubmitModal()">Return to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Stepper Tracking Modal (SRS § 9.7) -->
+  <div id="tracking-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">⏱️</span>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="track-id-badge" style="font-family: var(--font-mono); font-weight: 700; color: var(--brand-amber);">CMP-2026-XXXX</span>
+              <span id="track-status-badge" class="badge">Status</span>
+              <span id="track-priority-badge" class="badge">Normal Priority</span>
+            </div>
+            <h3 style="font-size: 17px; margin-top: 2px;">Live Complaint Lifecycle Tracker</h3>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print</button>
+          <button onclick="closeTrackingModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+        </div>
+      </div>
+
+      <!-- Stepper Header -->
+      <div class="stepper-container">
+        <div class="stepper-track"></div>
+        <div id="stepper-progress-fill" class="stepper-progress" style="width: 0%;"></div>
+        <div class="stepper-steps">
+          <div class="step-node">
+            <div id="step-circle-0" class="step-circle">1</div>
+            <span id="step-label-0" class="step-label">Submitted</span>
+          </div>
+          <div class="step-node">
+            <div id="step-circle-1" class="step-circle">2</div>
+            <span id="step-label-1" class="step-label">Assigned</span>
+          </div>
+          <div class="step-node">
+            <div id="step-circle-2" class="step-circle">3</div>
+            <span id="step-label-2" class="step-label">In Progress</span>
+          </div>
+          <div class="step-node">
+            <div id="step-circle-3" class="step-circle">4</div>
+            <span id="step-label-3" class="step-label">Resolved</span>
+          </div>
+          <div class="step-node">
+            <div id="step-circle-4" class="step-circle">5</div>
+            <span id="step-label-4" class="step-label">Closed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracker Body -->
+      <div class="modal-body">
+        <h4 id="track-title" style="font-size: 16px; margin-bottom: 8px;">Subject</h4>
+        <p id="track-desc" style="font-size: 12px; color: var(--ink-body); line-height: 1.6; background: #FDFCFA; border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px; margin-bottom: 14px;"></p>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; font-size: 11px; margin-bottom: 16px;">
+          <div style="background: #FAF9F5; padding: 8px; border: 1px solid #E8E5DD; border-radius: 6px;">
+            <span style="font-family: var(--font-mono); color: var(--ink-muted); display: block;">COMPLAINANT</span>
+            <strong id="track-student">Student Name</strong>
+          </div>
+          <div style="background: #FAF9F5; padding: 8px; border: 1px solid #E8E5DD; border-radius: 6px;">
+            <span style="font-family: var(--font-mono); color: var(--ink-muted); display: block;">DEPARTMENT</span>
+            <strong id="track-dept">Department</strong>
+          </div>
+          <div style="background: #FAF9F5; padding: 8px; border: 1px solid #E8E5DD; border-radius: 6px;">
+            <span style="font-family: var(--font-mono); color: var(--ink-muted); display: block;">CATEGORY</span>
+            <strong id="track-category">Category</strong>
+          </div>
+          <div style="background: #FAF9F5; padding: 8px; border: 1px solid #E8E5DD; border-radius: 6px;">
+            <span style="font-family: var(--font-mono); color: var(--ink-muted); display: block;">ASSIGNED AUTHORITY</span>
+            <strong id="track-authority">Faculty Name</strong>
+          </div>
+        </div>
+
+        <div id="track-remarks-container" class="remarks-box hidden" style="margin-bottom: 12px;">
+          <strong style="color: var(--brand-amber); font-family: var(--font-mono); font-size: 10px; display: block;">FACULTY INSPECTION REMARKS:</strong>
+          <span id="track-remarks-text"></span>
+        </div>
+
+        <div id="track-resolution-container" class="resolution-box hidden" style="margin-bottom: 16px;">
+          <strong style="color: var(--brand-forest); font-family: var(--font-mono); font-size: 10px; display: block;">OFFICIAL RESOLUTION:</strong>
+          <span id="track-resolution-text"></span>
+        </div>
+
+        <h5 style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; color: var(--ink-primary); margin-bottom: 8px;">
+          Immutable Audit History
+        </h5>
+        <div id="track-history-list" style="border: 1px solid #E8E5DD; border-radius: 8px; background: #FFF;"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="track-close-complaint-btn" class="btn btn-forest hidden">
+          ✓ Confirm Redressal & Close Case
+        </button>
+        <button class="btn btn-secondary" onclick="closeTrackingModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Printable Dossier View -->
+  <div id="dossier-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+            OFFICIAL GRIEVANCE DOSSIER &bull; CCMS-2026
+          </span>
+          <h3 style="font-size: 18px; margin-top: 2px;">Record #<span id="dossier-id"></span></h3>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Dossier</button>
+          <button onclick="closeDossierModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body" style="font-size: 12px;">
+        <div style="display: flex; justify-content: space-between; padding: 10px; background: #FAF9F5; border: 1px solid #E8E5DD; border-radius: 8px; margin-bottom: 14px;">
+          <span>Status: <strong id="dossier-status"></strong></span>
+          <span style="font-family: var(--font-mono); color: var(--ink-muted);">Lodged: <span id="dossier-date"></span></span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; display: block;">Student Complainant</span>
+            <strong id="dossier-student" style="font-size: 13px;"></strong>
+            <div style="font-family: var(--font-mono); color: var(--ink-muted); font-size: 11px;">Roll: <span id="dossier-roll"></span></div>
+          </div>
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; display: block;">Jurisdiction Authority</span>
+            <strong id="dossier-authority" style="font-size: 13px;"></strong>
+            <div style="color: var(--ink-muted); font-size: 11px;">Dept: <span id="dossier-dept"></span></div>
+          </div>
+        </div>
+
+        <div style="border: 1px solid #E8E5DD; padding: 14px; border-radius: 8px; margin-bottom: 14px;">
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; display: block;">Grievance Category: <span id="dossier-category"></span></span>
+          <h4 id="dossier-title" style="font-size: 15px; margin: 4px 0 8px;"></h4>
+          <p id="dossier-desc" style="color: var(--ink-body); line-height: 1.6;"></p>
+        </div>
+
+        <div id="dossier-remarks-container" class="remarks-box hidden" style="margin-bottom: 12px;">
+          <strong style="color: var(--brand-amber); font-family: var(--font-mono); font-size: 10px; display: block;">Faculty Inspection Notes:</strong>
+          <span id="dossier-remarks"></span>
+        </div>
+
+        <div id="dossier-resolution-container" class="resolution-box hidden" style="margin-bottom: 14px;">
+          <strong style="color: var(--brand-forest); font-family: var(--font-mono); font-size: 10px; display: block;">Verified Resolution:</strong>
+          <span id="dossier-resolution"></span>
+        </div>
+
+        <span style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Lifecycle History Log</span>
+        <div id="dossier-history-list" style="border: 1px solid #E8E5DD; border-radius: 8px;"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeDossierModal()">Close Dossier</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Staff Update Status & Remarks -->
+  <div id="staff-update-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+            SRS SECTION 9.4: STAFF MODULE
+          </span>
+          <h3 style="font-size: 18px; margin-top: 2px;">Update Complaint #<span id="staff-edit-complaint-id"></span></h3>
+        </div>
+        <button onclick="closeStaffUpdateModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Lifecycle Status *</label>
+          <select id="staff-edit-status" class="form-control" onchange="toggleResolutionVisibility()">
+            <option value="Assigned">Assigned (Under Review)</option>
+            <option value="In Progress">In Progress (Field Inspection / Repair)</option>
+            <option value="Resolved">Resolved (Corrective Action Complete)</option>
+            <option value="Closed">Closed (Confirmed & Archived)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Faculty Remarks / Inspection Notes</label>
+          <textarea id="staff-edit-remarks" class="form-control" rows="3" placeholder="Log technician findings, inspection details, or scheduled repair dates..."></textarea>
+        </div>
+
+        <div id="staff-resolution-group" class="form-group hidden">
+          <label class="form-label" style="color: var(--brand-forest);">Official Resolution Statement *</label>
+          <textarea id="staff-edit-resolution" class="form-control" rows="3" placeholder="Explicitly detail the completed repair or academic correction..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeStaffUpdateModal()">Cancel</button>
+        <button class="btn btn-forest" onclick="saveStaffUpdate()">Save Status & Remarks</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Admin Assign Complaint -->
+  <div id="admin-assign-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+            SRS SECTION 9.2: COMPLAINT ASSIGNMENT
+          </span>
+          <h3 style="font-size: 18px; margin-top: 2px;">Assign #<span id="assign-complaint-id"></span></h3>
+        </div>
+        <button onclick="closeAssignModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="padding: 10px; background: #FAF9F5; border: 1px solid #E8E5DD; border-radius: 8px; margin-bottom: 14px; font-size: 12px;">
+          <strong id="assign-title" style="display: block; margin-bottom: 4px;"></strong>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Target Department *</label>
+          <select id="assign-dept-select" class="form-control"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Assigned Faculty Officer *</label>
+          <select id="assign-staff-select" class="form-control"></select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeAssignModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAssignment()">Confirm Delegation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Add Student -->
+  <div id="add-student-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="font-size: 18px;">Enroll New Student</h3>
+        <button onclick="closeAddStudentModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+      <form onsubmit="saveNewStudent(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="new-student-name" class="form-control" placeholder="e.g. Tanvi Kulkarni" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Roll Number *</label>
+            <input type="text" id="new-student-roll" class="form-control" placeholder="e.g. 2024-COMP-088" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label class="form-label">Class</label>
+              <input type="text" id="new-student-class" class="form-control" value="T.E. Computer Engineering">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Division</label>
+              <input type="text" id="new-student-div" class="form-control" value="Div A">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select id="new-student-dept" class="form-control"></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddStudentModal()">Cancel</button>
+          <button type="submit" class="btn btn-forest">Save Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Add Staff -->
+  <div id="add-staff-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="font-size: 18px;">Add Faculty Grievance Officer</h3>
+        <button onclick="closeAddStaffModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+      <form onsubmit="saveNewStaff(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Faculty Name *</label>
+            <input type="text" id="new-staff-name" class="form-control" placeholder="e.g. Prof. Nilesh Shinde" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Designation</label>
+            <input type="text" id="new-staff-desig" class="form-control" value="Assistant Professor">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select id="new-staff-dept" class="form-control"></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddStaffModal()">Cancel</button>
+          <button type="submit" class="btn btn-forest">Save Officer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 8: Add Department -->
+  <div id="add-dept-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="font-size: 18px;">Add Department</h3>
+        <button onclick="closeAddDeptModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+      <form onsubmit="saveNewDept(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Department Name *</label>
+            <input type="text" id="new-dept-name" class="form-control" placeholder="e.g. Sports & Physical Education" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Code (Short) *</label>
+            <input type="text" id="new-dept-code" class="form-control" placeholder="e.g. SPORTS" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Head / In-Charge Name</label>
+            <input type="text" id="new-dept-head" class="form-control" placeholder="e.g. Dr. K. R. Gaikwad">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddDeptModal()">Cancel</button>
+          <button type="submit" class="btn btn-forest">Save Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 9: Add Category -->
+  <div id="add-cat-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 style="font-size: 18px;">Add Grievance Category</h3>
+        <button onclick="closeAddCatModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+      <form onsubmit="saveNewCat(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Category Title *</label>
+            <input type="text" id="new-cat-name" class="form-control" placeholder="e.g. Canteen Hygiene & Food Quality" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="new-cat-desc" class="form-control" rows="2" placeholder="Brief outline of issues covered..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Default Department</label>
+            <select id="new-cat-dept" class="form-control"></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddCatModal()">Cancel</button>
+          <button type="submit" class="btn btn-forest">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 10: Reports & Analytics (SRS § 9.8) -->
+  <div id="reports-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-dialog-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">📊</span>
+          <div>
+            <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+              SRS SECTION 9.8: COMPLAINT REPORT MODULE
+            </span>
+            <h3 style="font-size: 18px; margin-top: 2px;">Comprehensive Grievance Analytics & Reports</h3>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print Report</button>
+          <button onclick="closeReportsModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+        </div>
+      </div>
+
+      <div style="background: #FAF9F5; border-bottom: 1px solid #E8E5DD; padding: 8px 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="filter-btn report-tab-btn active" onclick="switchReportTab('overview', this)">1. Overall Statistics</button>
+        <button class="filter-btn report-tab-btn" onclick="switchReportTab('department', this)">2. Department-Wise</button>
+        <button class="filter-btn report-tab-btn" onclick="switchReportTab('category', this)">3. Category-Wise</button>
+        <button class="filter-btn report-tab-btn" onclick="switchReportTab('student', this)">4. Student-Wise</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Tab 1: Overview -->
+        <div id="report-tab-overview">
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div class="metric-card" style="padding: 14px;">
+              <span style="font-size: 10px; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Total Filed</span>
+              <div id="rep-total" class="metric-value" style="font-size: 26px;">0</div>
+            </div>
+            <div class="metric-card" style="padding: 14px;">
+              <span style="font-size: 10px; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Active Pending</span>
+              <div id="rep-pending" class="metric-value" style="font-size: 26px; color: var(--status-pending);">0</div>
+            </div>
+            <div class="metric-card" style="padding: 14px;">
+              <span style="font-size: 10px; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Resolved</span>
+              <div id="rep-resolved" class="metric-value" style="font-size: 26px; color: var(--brand-forest);">0</div>
+            </div>
+            <div class="metric-card" style="padding: 14px;">
+              <span style="font-size: 10px; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Resolution Rate</span>
+              <div id="rep-rate" class="metric-value" style="font-size: 26px; color: var(--brand-amber);">100%</div>
+            </div>
+          </div>
+          <div style="background: #FFFFFF; border: 1px solid #E8E5DD; border-radius: 10px; padding: 16px;">
+            <strong style="font-size: 14px; display: block; margin-bottom: 6px;">SRS Project Outcome Verification</strong>
+            <p style="font-size: 12px; color: var(--ink-body); line-height: 1.6;">
+              The digital workflow reduces manual application loss to 0%, assigns complaints automatically to respective faculty heads, and provides an end-to-end audit trail accessible to college management.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tab 2: Department-wise -->
+        <div id="report-tab-department" class="hidden">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Department</th>
+                  <th>Code</th>
+                  <th>Total Filed</th>
+                  <th>Pending</th>
+                  <th>Resolved</th>
+                  <th>Share %</th>
+                </tr>
+              </thead>
+              <tbody id="rep-dept-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 3: Category-wise -->
+        <div id="report-tab-category" class="hidden">
+          <div id="rep-cat-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;"></div>
+        </div>
+
+        <!-- Tab 4: Student-wise -->
+        <div id="report-tab-student" class="hidden">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Roll Number</th>
+                  <th>Department</th>
+                  <th>Total Lodged</th>
+                  <th>Pending</th>
+                  <th>Resolved</th>
+                </tr>
+              </thead>
+              <tbody id="rep-stu-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeReportsModal()">Close Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 11: SRS 5-Stage Workflow Guide -->
+  <div id="workflow-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div>
+          <span style="font-family: var(--font-mono); font-size: 10px; color: var(--brand-amber); font-weight: 700; text-transform: uppercase;">
+            SRS SECTION 9.5 & 16 SPECIFICATION
+          </span>
+          <h3 style="font-size: 18px; margin-top: 2px;">Grievance Lifecycle Workflow</h3>
+        </div>
+        <button onclick="closeWorkflowModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--ink-muted);">✕</button>
+      </div>
+
+      <div class="modal-body" style="font-size: 12px; line-height: 1.6;">
+        <p style="color: var(--ink-body); margin-bottom: 14px;">
+          The system strictly enforces a sequential 5-stage lifecycle to eliminate overlooked complaints and ensure student visibility:
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <strong>1. Submitted</strong>
+              <span class="badge badge-submitted">Actor: Student</span>
+            </div>
+            <p style="color: var(--ink-body);">Student lodges complaint with category, department, description, and proof. Unique ID generated.</p>
+          </div>
+
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <strong>2. Assigned</strong>
+              <span class="badge badge-assigned">Actor: Administrator</span>
+            </div>
+            <p style="color: var(--ink-body);">Admin delegates the grievance to the designated departmental faculty in-charge.</p>
+          </div>
+
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <strong>3. In Progress</strong>
+              <span class="badge badge-in-progress">Actor: Faculty / Staff</span>
+            </div>
+            <p style="color: var(--ink-body);">Faculty investigates on site, enters official remarks, and requisitions repairs.</p>
+          </div>
+
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <strong>4. Resolved</strong>
+              <span class="badge badge-resolved">Actor: Faculty / Staff</span>
+            </div>
+            <p style="color: var(--ink-body);">Corrective action completed; faculty records official resolution statement and timestamp.</p>
+          </div>
+
+          <div style="border: 1px solid #E8E5DD; padding: 12px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <strong>5. Closed</strong>
+              <span class="badge badge-closed">Actor: Student / Admin</span>
+            </div>
+            <p style="color: var(--ink-body);">Student confirms satisfactory resolution and the record is officially archived.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-forest" onclick="closeWorkflowModal()">Understood & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Institutional Footer -->
+  <footer class="main-footer no-print">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span style="font-size: 20px;">🏛️</span>
+            <strong style="font-size: 15px; color: var(--ink-primary); font-family: var(--font-serif);">College Complaint Management System</strong>
+          </div>
+          <p style="line-height: 1.6; max-width: 440px; color: var(--ink-body);">
+            Developed as a Project Based Learning (PBL) Mini Project to simplify and automate the process of submitting, managing, tracking, and resolving student grievances within a college.
+          </p>
+          <div style="margin-top: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted);">
+            Author: <strong>Samiksha Kakade</strong> (T.E. Computer Engineering) &bull; Academic Year 2026
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; margin-bottom: 10px;">Evaluator Portals</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;">
+            <li><a href="javascript:void(0)" onclick="app.role='student'; app.save(); renderAll();" style="color: var(--ink-body); text-decoration: none;">🎓 Student Portal (Samiksha)</a></li>
+            <li><a href="javascript:void(0)" onclick="app.role='staff'; app.save(); renderAll();" style="color: var(--ink-body); text-decoration: none;">👨‍🏫 Faculty Portal (Prof. Sharma)</a></li>
+            <li><a href="javascript:void(0)" onclick="app.role='admin'; app.save(); renderAll();" style="color: var(--ink-body); text-decoration: none;">🏛️ Admin Portal (Dean)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; margin-bottom: 10px;">SRS Documentation</h4>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 6px;">
+            <li><a href="javascript:void(0)" onclick="openWorkflowModal()" style="color: var(--ink-body); text-decoration: none;">5-Stage Workflow Specs</a></li>
+            <li><a href="javascript:void(0)" onclick="openReportsModal()" style="color: var(--ink-body); text-decoration: none;">SRS Statistical Reports</a></li>
+            <li><a href="javascript:void(0)" onclick="resetDemoData()" style="color: var(--brand-amber); text-decoration: underline;">Reset Demo Database</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2026 College Complaint Management System. Pure HTML, CSS & JavaScript.</div>
+        <div>Strict Light Institutional Theme &bull; Vercel Ready</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script src="js/app.js"></script>
+</body>
 </html>
